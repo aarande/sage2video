@@ -3,6 +3,12 @@ import base64
 import argparse
 import av
 import sys
+import Queue
+
+import time
+
+from VideoDecoder import VideoDecoder
+from threading import Thread
 
 from websocketio import WebSocketIO
 station_config = {'kfor':{'url':'http://localhost:8090/ch4.flv',
@@ -18,17 +24,11 @@ station_config = {'kfor':{'url':'http://localhost:8090/ch4.flv',
 class SageVideo(object):
     def __init__(self,station):
         super(SageVideo, self).__init__()
-        self.running = True
         self.station = station
-        # self.container = av.open('/home/sad/Documents/SAGE2_Media/videos/May20thCondensedCoverage.mp4')
-        self.container = av.open(station_config[self.station]['url'])
-        self.video = self.container.streams[0]
-        print self.video
-
-
         self.wsio = WebSocketIO("ws://localhost")
-
-        # self.captureFrame()
+        self.queue = Queue.Queue()
+        self.video = VideoDecoder(self.queue,self.wsio,station_config[self.station]['url'])
+        self.video.setDaemon(True)
         self.wsio.open(self.on_open)
 
     def on_open(self):
@@ -42,39 +42,26 @@ class SageVideo(object):
     def initialize(self,data):
         print 'in initialize'
         self.appId = data['UID']
+        self.video.setAppId(data['UID'])
+        self.width = self.video.getWidth()
+        self.height = self.video.getHeight()
 
-        self.width = self.video.width
-        self.height = self.video.height
         self.wsio.emit('startNewMediaStream',
                   {'id': self.appId + "|0", 'title': station_config[self.station]['title'], 'type': "image/jpeg", 'encoding': "base64",
                    'width': self.width, 'height': self.height})
+        self.video.start()
         print "started app"
-        self.startTransmit()
-
-
-
-    def startTransmit(self):
-        for packet in self.container.demux(self.video):
-            if self.running:
-                for frame in packet.decode():
-                    img = frame.to_image()
-                    buf = cStringIO.StringIO()
-                    img.save(buf, quality=70, format='JPEG')
-                    jpeg = base64.b64encode(buf.getvalue())
-                    buf.close()
-                    self.wsio.emit('updateMediaStreamFrame',
-                                   {'id': self.appId + "|0",
-                                    'state': {'src': jpeg, 'type': "image/jpeg", 'encoding': "base64"}})
 
     def requestNextFrame(self,data):
         pass
+
 
     def setupDisplayConfiguration(self,data):
         pass
 
     def stopMediaCapture(self,data):
         print "Stop media capture and exit"
-        self.running = False
+        self.video.running = False
         sys.exit()
 
 if __name__ == '__main__':
