@@ -27,7 +27,7 @@ class SageVideo(object):
         self.station = station
         self.wsio = WebSocketIO("ws://localhost")
         self.queue = Queue.Queue()
-        self.video = VideoDecoder(self.queue,self.wsio,station_config[self.station]['url'])
+        self.video = VideoDecoder(self.queue,station_config[self.station]['url'])
         self.video.setDaemon(True)
         self.wsio.open(self.on_open)
 
@@ -53,7 +53,11 @@ class SageVideo(object):
         print "started app"
 
     def requestNextFrame(self,data):
-        pass
+        jpeg = self.queue.get()
+        self.wsio.emit('updateMediaStreamFrame',
+                       {'id': self.appId + "|0",
+                        'state': {'src': jpeg, 'type': "image/jpeg", 'encoding': "base64"}})
+
 
 
     def setupDisplayConfiguration(self,data):
