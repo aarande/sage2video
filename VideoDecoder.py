@@ -33,7 +33,7 @@ class VideoDecoder(threading.Thread):
                 for frame in packet.decode():
                     rgba = frame.reformat(format='rgba')
                     rgbarray = np.frombuffer(rgba.planes[0],np.uint8)
-                    appid = np.fromstring(self.appId+'\0',dtype=np.uint8)
+                    appid = np.fromstring(self.appId+'\x00',dtype=np.uint8)
                     dataarray = np.concatenate([appid,rgbarray])
                     self.queue.put(dataarray)
             else:

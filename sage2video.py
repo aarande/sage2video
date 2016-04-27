@@ -26,7 +26,7 @@ class SageVideo(object):
         super(SageVideo, self).__init__()
         self.station = station
         self.wsio = WebSocketIO("ws://localhost")
-        self.queue = Queue.Queue(maxsize=18000)
+        self.queue = Queue.Queue(maxsize=1800)
         self.video = VideoDecoder(self.queue,station_config[self.station]['url'])
         self.video.setDaemon(True)
         self.wsio.open(self.on_open)
@@ -48,9 +48,8 @@ class SageVideo(object):
         print "started app"
 
     def requestNextFrame(self,data):
-        print 'in requestNextFrame'
         nextframe = self.queue.get()
-        self.wsio.emit('updateMediaBlockStreamFrame',nextframe,0)
+        self.wsio.emit('updateMediaBlockStreamFrame',nextframe)
 
 
 
@@ -58,7 +57,7 @@ class SageVideo(object):
         self.width = self.video.getWidth()
         self.height = self.video.getHeight()
         self.wsio.emit('startNewMediaBlockStream',
-                       {'id': self.appId, 'title': station_config[self.station]['title'], 'colorspace': 'rgba',
+                       {'id': self.appId, 'title': station_config[self.station]['title'], 'color':'#FFFFFF', 'colorspace': 'RGBA',
                         'width': self.width, 'height': self.height})
 
     def stopMediaCapture(self,data):
