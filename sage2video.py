@@ -26,7 +26,7 @@ class SageVideo(object):
         super(SageVideo, self).__init__()
         self.station = station
         self.wsio = WebSocketIO("ws://localhost")
-        self.queue = Queue.Queue()
+        self.queue = Queue.Queue(maxsize=18000)
         self.video = VideoDecoder(self.queue,station_config[self.station]['url'])
         self.video.setDaemon(True)
         self.wsio.open(self.on_open)
@@ -41,27 +41,25 @@ class SageVideo(object):
 
     def initialize(self,data):
         print 'in initialize'
-        self.appId = data['UID']
-        self.video.setAppId(data['UID'])
-        self.width = self.video.getWidth()
-        self.height = self.video.getHeight()
-
-        self.wsio.emit('startNewMediaStream',
-                  {'id': self.appId + "|0", 'title': station_config[self.station]['title'], 'type': "image/jpeg", 'encoding': "base64",
-                   'width': self.width, 'height': self.height})
+        self.appId = data['UID']+'|0'
+        self.video.setAppId(self.appId)
+        print 'appId is', self.appId
         self.video.start()
         print "started app"
 
     def requestNextFrame(self,data):
-        jpeg = self.queue.get()
-        self.wsio.emit('updateMediaStreamFrame',
-                       {'id': self.appId + "|0",
-                        'state': {'src': jpeg, 'type': "image/jpeg", 'encoding': "base64"}})
+        print 'in requestNextFrame'
+        nextframe = self.queue.get()
+        self.wsio.emit('updateMediaBlockStreamFrame',nextframe,0)
 
 
 
     def setupDisplayConfiguration(self,data):
-        pass
+        self.width = self.video.getWidth()
+        self.height = self.video.getHeight()
+        self.wsio.emit('startNewMediaBlockStream',
+                       {'id': self.appId, 'title': station_config[self.station]['title'], 'colorspace': 'rgba',
+                        'width': self.width, 'height': self.height})
 
     def stopMediaCapture(self,data):
         print "Stop media capture and exit"
