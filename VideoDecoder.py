@@ -7,10 +7,9 @@ import StringIO, base64
 import cStringIO
 
 class VideoDecoder(threading.Thread):
-    def __init__(self,vidqueue,wsio,filename):
+    def __init__(self,vidqueue,filename):
         super(VideoDecoder, self).__init__()
         self.appId = None
-        self.wsio = wsio
         self.running = False
         self.queue = vidqueue
         self.filename = filename
@@ -33,12 +32,13 @@ class VideoDecoder(threading.Thread):
                 for frame in packet.decode():
                     img = frame.to_image()
                     buf = cStringIO.StringIO()
-                    img.save(buf, quality=60, format='JPEG')
+                    img.save(buf, quality=90, format='JPEG')
                     jpeg = base64.b64encode(buf.getvalue())
                     buf.close()
-                    self.wsio.emit('updateMediaStreamFrame',
-                                   {'id': self.appId + "|0",
-                                    'state': {'src': jpeg, 'type': "image/jpeg", 'encoding': "base64"}})
+                    self.queue.put(jpeg)
+                    # self.wsio.emit('updateMediaStreamFrame',
+                    #                {'id': self.appId + "|0",
+                    #                 'state': {'src': jpeg, 'type': "image/jpeg", 'encoding': "base64"}})
             else:
                 break
 
