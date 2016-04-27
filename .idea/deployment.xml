@@ -23,20 +23,6 @@
           </mappings>
         </serverdata>
       </paths>
-      <paths name="oun-vm-sad5-sage2video">
-        <serverdata>
-          <mappings>
-            <mapping local="$PROJECT_DIR$" web="/" />
-          </mappings>
-        </serverdata>
-      </paths>
-      <paths name="oun-vm-sads-sage2video">
-        <serverdata>
-          <mappings>
-            <mapping local="$PROJECT_DIR$" web="/" />
-          </mappings>
-        </serverdata>
-      </paths>
       <paths name="oun_geonode">
         <serverdata>
           <mappings>
@@ -52,6 +38,13 @@
         </serverdata>
       </paths>
       <paths name="sage2apps">
+        <serverdata>
+          <mappings>
+            <mapping local="$PROJECT_DIR$" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
+      <paths name="sage2videoapp">
         <serverdata>
           <mappings>
             <mapping local="$PROJECT_DIR$" web="/" />
