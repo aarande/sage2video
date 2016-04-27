@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="PublishConfigData" autoUpload="Always" serverName="sage2video">
+  <component name="PublishConfigData">
     <serverData>
       <paths name="oun-lw-sad5">
         <serverdata>
@@ -17,6 +17,20 @@
         </serverdata>
       </paths>
       <paths name="oun-media">
+        <serverdata>
+          <mappings>
+            <mapping local="$PROJECT_DIR$" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
+      <paths name="oun-vm-sad5-sage2video">
+        <serverdata>
+          <mappings>
+            <mapping local="$PROJECT_DIR$" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
+      <paths name="oun-vm-sads-sage2video">
         <serverdata>
           <mappings>
             <mapping local="$PROJECT_DIR$" web="/" />
@@ -44,13 +58,6 @@
           </mappings>
         </serverdata>
       </paths>
-      <paths name="sage2video">
-        <serverdata>
-          <mappings>
-            <mapping deploy="/" local="$PROJECT_DIR$" web="/" />
-          </mappings>
-        </serverdata>
-      </paths>
       <paths name="www1Graphicasts">
         <serverdata>
           <mappings>
@@ -59,6 +66,5 @@
         </serverdata>
       </paths>
     </serverData>
-    <option name="myAutoUpload" value="ALWAYS" />
   </component>
 </project>
