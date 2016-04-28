@@ -11,13 +11,13 @@ from VideoDecoder import VideoDecoder
 from threading import Thread
 
 from websocketio import WebSocketIO
-station_config = {'kfor':{'url':'http://localhost:8090/ch4.flv',
+station_config = {'kfor':{'url':'http://localhost:8090/ch4',
                           'title':'KFOR Ch 4 (NBC)'},
-                  'koco': {'url': 'http://localhost:8090/ch5.flv',
+                  'koco': {'url': 'http://localhost:8090/ch5',
                            'title': 'KOCO Ch 5 (ABC)'},
-                'kwtv': {'url': 'http://localhost:8090/ch9.flv',
+                'kwtv': {'url': 'http://localhost:8090/ch9',
                          'title': 'KWTV Ch 9 (CBS)'},
-                'kokh': {'url': 'http://localhost:8090/ch12.flv',
+                'kokh': {'url': 'http://localhost:8090/ch12',
                          'title': 'KOKH Ch 12 (FOX)'}
                   }
 

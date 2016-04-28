@@ -15,7 +15,7 @@ class VideoDecoder(threading.Thread):
         self.queue = vidqueue
         self.filename = filename
         self.container = av.open(filename)
-        self.video = self.container.streams[0]
+        self.video = self.container.streams[1]
 
     def getHeight(self):
         return self.video.height
